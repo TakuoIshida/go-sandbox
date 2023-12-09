@@ -20,4 +20,4 @@ steps:
 substitutions:
   _REGION: 'asia-northeast1'
   _DOCKER_IMAGE_REPO_NAME: 'go-sandbox'
-  _DOCKER_IMAGE_NAME: 'todo:$$SHORT_SHA'
+  _DOCKER_IMAGE_NAME: 'todo:$_SHORT_SHA'
