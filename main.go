@@ -3,22 +3,25 @@ package main
 import (
 	"fmt"
 	todo "go-sandbox/controller"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	todo.CreateTodo()
-	engine := gin.Default()
-	// htmlのディレクトリを指定
-	engine.LoadHTMLGlob("templates/*")
-	engine.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			// htmlに渡す変数を定義
-			"message": "hello gin",
-		})
-	})
+
+	router := gin.New() // TODO
+	// router.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
+
+	todoGroup := router.Group("/todo")
+	{
+		todoGroup.GET("/", todo.FindList)
+		todoGroup.GET("/:id", todo.Find)
+		todoGroup.POST("/", todo.Create)
+		todoGroup.PUT("/:id", todo.Update)
+		todoGroup.DELETE("/:id", todo.Delete)
+
+	}
+
 	fmt.Println("Listen on http://localhost:8080")
-	engine.Run()
+	router.Run()
 }
