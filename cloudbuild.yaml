@@ -5,18 +5,18 @@ steps:
   args:
   - '-c'
   - |
-    echo "My custom environment variable: $REGION, $DOCKER_IMAGE_REPO_NAME, $DOCKER_IMAGE_NAME"
+    echo "My custom environment variable: $_REGION, $_DOCKER_IMAGE_REPO_NAME, $_DOCKER_IMAGE_NAME"
 # Docker Build
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', '$REGION-docker.pkg.dev/$PROJECT_ID/$DOCKER_IMAGE_REPO_NAME/$DOCKER_IMAGE_NAME', '.']
+  args: ['build', '-t', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_DOCKER_IMAGE_REPO_NAME/$_DOCKER_IMAGE_NAME', '.']
 # Docker push to Google Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', '$REGION-docker.pkg.dev/$PROJECT_ID/$DOCKER_IMAGE_REPO_NAME/$DOCKER_IMAGE_NAME']
+  args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_DOCKER_IMAGE_REPO_NAME/$_DOCKER_IMAGE_NAME']
 # Deploy to Cloud Run
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['run', 'deploy', 'helloworld-${SHORT_SHA}',
-         '--image=$REGION-docker.pkg.dev/$PROJECT_ID/$DOCKER_IMAGE_REPO_NAME/$DOCKER_IMAGE_NAME',
-         '--region', '$REGION', '--platform', 'managed']
+         '--image=$_REGION-docker.pkg.dev/$PROJECT_ID/$_DOCKER_IMAGE_REPO_NAME/$_DOCKER_IMAGE_NAME',
+         '--region', '$_REGION', '--platform', 'managed']
 substitutions:
   _REGION: 'asia-northeast1'
   _DOCKER_IMAGE_REPO_NAME: 'go-sandbox'
