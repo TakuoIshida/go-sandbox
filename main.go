@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
-	todo "go-sandbox/controller"
+	todo_controller "go-sandbox/controller"
+	todo_service "go-sandbox/domain/service"
+	db_conn "go-sandbox/infrastructure"
+	todo_repository_impl "go-sandbox/infrastructure/repository"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,14 +15,18 @@ func main() {
 	router := gin.New() // TODO
 	// router.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
 
+	mySQLConn := db_conn.NewMySQLConnector()
+	todoRepository := todo_repository_impl.TodoRepository(mySQLConn.Conn)
+	todoService := todo_service.NewTodoService(todoRepository)
+	todoController := todo_controller.TodoController(todoService)
+
 	todoGroup := router.Group("/todo")
 	{
-		todoGroup.GET("/", todo.FindList)
-		todoGroup.GET("/:id", todo.Find)
-		todoGroup.POST("/", todo.Create)
-		todoGroup.PUT("/:id", todo.Update)
-		todoGroup.DELETE("/:id", todo.Delete)
-
+		todoGroup.GET("/", todoController.FindList)
+		todoGroup.GET("/:id", todoController.FindById)
+		todoGroup.POST("/", todoController.Create)
+		todoGroup.PUT("/", todoController.Update)
+		todoGroup.DELETE("/", todoController.Delete)
 	}
 
 	fmt.Println("Listen on http://localhost:8080")
