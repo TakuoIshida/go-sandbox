@@ -2,21 +2,22 @@ package main
 
 import (
 	"fmt"
+	"go-sandbox/config"
 	todo_controller "go-sandbox/controller"
 	todo_service "go-sandbox/domain/service"
-	db_conn "go-sandbox/infrastructure"
+	database "go-sandbox/infrastructure"
 	todo_repository_impl "go-sandbox/infrastructure/repository"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-
+	config.LoadConfig()
 	router := gin.New() // TODO
 	// router.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
 
-	mySQLConn := db_conn.NewMySQLConnector()
-	todoRepository := todo_repository_impl.TodoRepository(mySQLConn.Conn)
+	conn := database.NewDBClientConnector()
+	todoRepository := todo_repository_impl.TodoRepository(conn.DB)
 	todoService := todo_service.NewTodoService(todoRepository)
 	todoController := todo_controller.TodoController(todoService)
 

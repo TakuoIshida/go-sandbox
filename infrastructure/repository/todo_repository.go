@@ -1,18 +1,18 @@
 package todo_repository_impl
 
 import (
-	"database/sql"
 	todo_model "go-sandbox/domain/model"
 	todo_repository "go-sandbox/domain/repository"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type todoRepository struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
-func TodoRepository(db *sql.DB) todo_repository.ITodoRepository {
+func TodoRepository(db *gorm.DB) todo_repository.ITodoRepository {
 	return &todoRepository{
 		DB: db,
 	}
