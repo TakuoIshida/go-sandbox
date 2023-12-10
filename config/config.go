@@ -15,14 +15,16 @@ type Config struct {
 	DbPort     string
 }
 
-func LoadConfig() *Config {
+var Conf Config
+
+func LoadConfig() {
 	err := godotenv.Load("./db/.env.local")
 	if err != nil {
 		// TODO localのみ。dev, productionでは、読み込まない
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	conf := Config{
+	Conf = Config{
 		DbHost:     os.Getenv("POSTGRES_HOST"),
 		DbUser:     os.Getenv("POSTGRES_USER"),
 		DbName:     os.Getenv("POSTGRES_DB"),
@@ -30,5 +32,4 @@ func LoadConfig() *Config {
 		DbPort:     os.Getenv("POSTGRES_PORT"),
 	}
 
-	return &conf
 }

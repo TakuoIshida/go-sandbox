@@ -4,6 +4,7 @@ import (
 	todo_model "go-sandbox/domain/model"
 	todo_service "go-sandbox/domain/service"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,11 @@ func TodoController(ts todo_service.ITodoService) *todoController {
 }
 
 func (ts *todoController) FindById(ctx *gin.Context) {
-	id := ctx.Query("id")
+	id, err := strconv.ParseInt(ctx.Query("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	todo, err := ts.todoService.FindById(ctx, id)
 	if err != nil {
@@ -65,7 +70,7 @@ func (ts *todoController) Create(ctx *gin.Context) {
 }
 
 type UpdateTodoDto struct {
-	ID        int
+	ID        int64
 	Title     string
 	Content   string
 	CreatedAt time.Time
@@ -90,7 +95,7 @@ func (ts *todoController) Update(ctx *gin.Context) {
 }
 
 type DeleteTodoDto struct {
-	ID int
+	ID int64
 }
 
 func (ts *todoController) Delete(ctx *gin.Context) {

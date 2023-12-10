@@ -8,11 +8,11 @@ import (
 )
 
 type ITodoService interface {
-	FindById(ctx *gin.Context, id string) (todo_model.Todo, error)
+	FindById(ctx *gin.Context, id int64) (todo_model.Todo, error)
 	FindList(ctx *gin.Context) ([]todo_model.Todo, error)
 	Create(ctx *gin.Context, todo todo_model.Todo) error
 	Update(ctx *gin.Context, todo todo_model.Todo) error
-	Delete(ctx *gin.Context, id string) error
+	Delete(ctx *gin.Context, id int64) error
 }
 
 // struct that meets interface
@@ -28,7 +28,7 @@ func NewTodoService(tr todo_repository.ITodoRepository) ITodoService {
 }
 
 // FindById implements ITodoService.
-func (ts *todoService) FindById(ctx *gin.Context, id string) (todo_model.Todo, error) {
+func (ts *todoService) FindById(ctx *gin.Context, id int64) (todo_model.Todo, error) {
 	return ts.FindById(ctx, id)
 }
 
@@ -48,6 +48,6 @@ func (ts *todoService) Update(ctx *gin.Context, todo todo_model.Todo) error {
 }
 
 // Delete implements ITodoService.
-func (ts *todoService) Delete(ctx *gin.Context, id string) error {
+func (ts *todoService) Delete(ctx *gin.Context, id int64) error {
 	return ts.Delete(ctx, id)
 }

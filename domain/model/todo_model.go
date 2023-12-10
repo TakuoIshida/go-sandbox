@@ -5,7 +5,7 @@ import (
 )
 
 type Todo struct {
-	ID         int
+	ID         int64
 	Title      string
 	Content    string
 	CreatedAt  time.Time

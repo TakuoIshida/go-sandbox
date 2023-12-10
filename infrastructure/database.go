@@ -13,9 +13,9 @@ type DBClientConnector struct {
 }
 
 func NewDBClientConnector() *DBClientConnector {
-	config := config.LoadConfig()
+	cfg := config.Conf
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo", config.DbHost, config.DbUser, config.DbPassword, config.DbName, config.DbPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
