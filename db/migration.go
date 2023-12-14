@@ -1,4 +1,4 @@
-package main
+package migration
 
 import (
 	"fmt"
@@ -42,12 +42,12 @@ func dbInit() *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	generateTableStruct(db)
+	GenerateTableStruct(db)
 	fmt.Println("db initialized!")
 	return db
 }
 
-func generateTableStruct(db *gorm.DB) {
+func GenerateTableStruct(db *gorm.DB) {
 	g := gen.NewGenerator(gen.Config{
 		OutPath: "../query",
 		Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode

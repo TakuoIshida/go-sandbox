@@ -1,6 +1,7 @@
 package todo_controller
 
 import (
+	"fmt"
 	todo_model "go-sandbox/domain/model"
 	todo_service "go-sandbox/domain/service"
 	"net/http"
@@ -21,28 +22,19 @@ func TodoController(ts todo_service.ITodoService) *todoController {
 }
 
 func (ts *todoController) FindById(ctx *gin.Context) {
-	id, err := strconv.ParseInt(ctx.Query("id"), 10, 64)
+	id, err := strconv.ParseInt(fmt.Sprintf("%s", ctx.Param("id")), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	todo, err := ts.todoService.FindById(ctx, id)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	todo := ts.todoService.FindById(ctx, id)
 
 	ctx.JSON(http.StatusOK, todo)
 }
 
 func (ts *todoController) FindList(ctx *gin.Context) {
-	todoList, err := ts.todoService.FindList(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
+	todoList := ts.todoService.FindAll(ctx)
 	ctx.JSON(http.StatusOK, todoList)
 }
 
@@ -58,7 +50,6 @@ func (ts *todoController) Create(ctx *gin.Context) {
 		return
 	}
 	new := todo_model.Todo{
-		ID:         1, //TODO
 		Title:      body.Title,
 		Content:    body.Content,
 		CreatedAt:  time.Now(),
@@ -76,23 +67,23 @@ type UpdateTodoDto struct {
 	CreatedAt time.Time
 }
 
-func (ts *todoController) Update(ctx *gin.Context) {
-	var body UpdateTodoDto
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	edit := todo_model.Todo{
-		ID:         body.ID,
-		Title:      body.Title,
-		Content:    body.Content,
-		CreatedAt:  body.CreatedAt,
-		UpdatedAt:  time.Now(),
-		DeleteFlag: false,
-	}
-	ts.todoService.Create(ctx, edit)
-	ctx.JSON(http.StatusCreated, edit)
-}
+// func (ts *todoController) Update(ctx *gin.Context) {
+// 	var body UpdateTodoDto
+// 	if err := ctx.ShouldBindJSON(&body); err != nil {
+// 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	edit := todo_model.Todo{
+// 		ID:         body.ID,
+// 		Title:      body.Title,
+// 		Content:    body.Content,
+// 		CreatedAt:  body.CreatedAt,
+// 		UpdatedAt:  time.Now(),
+// 		DeleteFlag: false,
+// 	}
+// 	ts.todoService.Create(ctx, edit)
+// 	ctx.JSON(http.StatusCreated, edit)
+// }
 
 type DeleteTodoDto struct {
 	ID int64
@@ -104,9 +95,6 @@ func (ts *todoController) Delete(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	delete := todo_model.Todo{
-		ID: body.ID,
-	}
-	ts.todoService.Create(ctx, delete)
-	ctx.JSON(http.StatusCreated, delete)
+	ts.todoService.Delete(ctx, body.ID)
+	ctx.JSON(http.StatusCreated, body.ID)
 }
