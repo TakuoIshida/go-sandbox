@@ -19,7 +19,7 @@ func main() {
 	conn := database.NewDBClientConnector()
 
 	todoRepository := repository.NewTodoRepositoryImpl(conn.DB)
-	todoService := service.NewTagsServiceImpl(todoRepository)
+	todoService := service.NewTodoServiceImpl(todoRepository)
 	todoController := todo_controller.TodoController(todoService)
 
 	todoGroup := router.Group("/todo")

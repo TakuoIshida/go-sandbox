@@ -27,14 +27,11 @@ func newTodo(db *gorm.DB, opts ...gen.DOOption) todo {
 
 	tableName := _todo.todoDo.TableName()
 	_todo.ALL = field.NewAsterisk(tableName)
-	_todo.ID = field.NewInt64(tableName, "id")
-	_todo.CreatedAt = field.NewTime(tableName, "created_at")
-	_todo.UpdatedAt = field.NewTime(tableName, "updated_at")
-	_todo.DeletedAt = field.NewField(tableName, "deleted_at")
+	_todo.ID = field.NewString(tableName, "id")
 	_todo.Title = field.NewString(tableName, "title")
 	_todo.Content = field.NewString(tableName, "content")
 	_todo.DeleteFlag = field.NewBool(tableName, "delete_flag")
-	_todo.UserID = field.NewInt64(tableName, "user_id")
+	_todo.UserID = field.NewString(tableName, "user_id")
 
 	_todo.fillFieldMap()
 
@@ -45,14 +42,11 @@ type todo struct {
 	todoDo
 
 	ALL        field.Asterisk
-	ID         field.Int64
-	CreatedAt  field.Time
-	UpdatedAt  field.Time
-	DeletedAt  field.Field
+	ID         field.String
 	Title      field.String
 	Content    field.String
 	DeleteFlag field.Bool
-	UserID     field.Int64
+	UserID     field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -69,14 +63,11 @@ func (t todo) As(alias string) *todo {
 
 func (t *todo) updateTableName(table string) *todo {
 	t.ALL = field.NewAsterisk(table)
-	t.ID = field.NewInt64(table, "id")
-	t.CreatedAt = field.NewTime(table, "created_at")
-	t.UpdatedAt = field.NewTime(table, "updated_at")
-	t.DeletedAt = field.NewField(table, "deleted_at")
+	t.ID = field.NewString(table, "id")
 	t.Title = field.NewString(table, "title")
 	t.Content = field.NewString(table, "content")
 	t.DeleteFlag = field.NewBool(table, "delete_flag")
-	t.UserID = field.NewInt64(table, "user_id")
+	t.UserID = field.NewString(table, "user_id")
 
 	t.fillFieldMap()
 
@@ -93,11 +84,8 @@ func (t *todo) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *todo) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 8)
+	t.fieldMap = make(map[string]field.Expr, 5)
 	t.fieldMap["id"] = t.ID
-	t.fieldMap["created_at"] = t.CreatedAt
-	t.fieldMap["updated_at"] = t.UpdatedAt
-	t.fieldMap["deleted_at"] = t.DeletedAt
 	t.fieldMap["title"] = t.Title
 	t.fieldMap["content"] = t.Content
 	t.fieldMap["delete_flag"] = t.DeleteFlag

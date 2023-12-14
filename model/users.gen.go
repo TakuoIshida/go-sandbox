@@ -4,24 +4,14 @@
 
 package model
 
-import (
-	"time"
-
-	"gorm.io/gorm"
-)
-
 const TableNameUser = "users"
 
 // User mapped from table <users>
 type User struct {
-	ID         int64          `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	CreatedAt  time.Time      `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt  time.Time      `gorm:"column:updated_at" json:"updated_at"`
-	DeletedAt  gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
-	Name       string         `gorm:"column:name" json:"name"`
-	Email      string         `gorm:"column:email" json:"email"`
-	Age        int64          `gorm:"column:age" json:"age"`
-	DeleteFlag bool           `gorm:"column:delete_flag" json:"delete_flag"`
+	ID         string `gorm:"column:id;primaryKey" json:"id"`
+	Email      string `gorm:"column:email" json:"email"`
+	Age        int64  `gorm:"column:age" json:"age"`
+	DeleteFlag bool   `gorm:"column:delete_flag" json:"delete_flag"`
 }
 
 // TableName User's table name

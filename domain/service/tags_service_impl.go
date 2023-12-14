@@ -7,40 +7,40 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TagsServiceImpl struct {
-	TagsRepository repository.ITodoRepository
+type TodoServiceImpl struct {
+	TodoRepository repository.ITodoRepository
 }
 
-func NewTagsServiceImpl(tagRepository repository.ITodoRepository) ITodoService {
-	return &TagsServiceImpl{
-		TagsRepository: tagRepository,
+func NewTodoServiceImpl(tagRepository repository.ITodoRepository) ITodoService {
+	return &TodoServiceImpl{
+		TodoRepository: tagRepository,
 	}
 }
 
-// Create implements TagsService
-func (t *TagsServiceImpl) Create(ctx *gin.Context, todo todo_model.Todo) {
-	t.TagsRepository.Save(ctx, todo)
+// Create implements TodoService
+func (t *TodoServiceImpl) Create(ctx *gin.Context, todo todo_model.Todo) {
+	t.TodoRepository.Save(ctx, todo)
 }
 
-// Delete implements TagsService
-func (t *TagsServiceImpl) Delete(ctx *gin.Context, id int64) {
-	t.TagsRepository.Delete(ctx, id)
+// Delete implements TodoService
+func (t *TodoServiceImpl) Delete(ctx *gin.Context, id int64) {
+	t.TodoRepository.Delete(ctx, id)
 }
 
-// FindAll implements TagsService
-func (t *TagsServiceImpl) FindAll(ctx *gin.Context) []todo_model.Todo {
-	return t.TagsRepository.FindAll(ctx)
+// FindAll implements TodoService
+func (t *TodoServiceImpl) FindAll(ctx *gin.Context) []todo_model.Todo {
+	return t.TodoRepository.FindAll(ctx)
 }
 
-// FindById implements TagsService
-func (t *TagsServiceImpl) FindById(ctx *gin.Context, id int64) todo_model.Todo {
-	return t.TagsRepository.FindById(ctx, id)
+// FindById implements TodoService
+func (t *TodoServiceImpl) FindById(ctx *gin.Context, id int64) todo_model.Todo {
+	return t.TodoRepository.FindById(ctx, id)
 }
 
-// // Update implements TagsService
-// func (t *TagsServiceImpl) Update(ctx *gin.Context, tags request.UpdateTagsRequest) {
-// 	tagData, err := t.TagsRepository.FindById(tags.Id)
+// // Update implements TodoService
+// func (t *TodoServiceImpl) Update(ctx *gin.Context, Todo request.UpdateTodoRequest) {
+// 	tagData, err := t.TodoRepository.FindById(Todo.Id)
 // 	helper.ErrorPanic(err)
-// 	tagData.Name = tags.Name
-// 	t.TagsRepository.Update(tagData)
+// 	tagData.Name = Todo.Name
+// 	t.TodoRepository.Update(tagData)
 // }
