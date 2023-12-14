@@ -1,4 +1,4 @@
-package migration
+package main
 
 import (
 	"fmt"
@@ -16,9 +16,11 @@ func main() {
 	// dbを作成します
 	db := dbInit()
 
-	// dbをmigrateします
+	// dbをmigrateします（constraintsを意識した順序で並べないといけない）
 	db.AutoMigrate(&table.User{}, &table.Todo{})
-	db.Migrator().CreateConstraint(&table.User{}, "Todos")
+
+	// Dropします。(constrantsはよしなにやってくれる。)
+	// db.Migrator().DropTable(&table.User{}, &table.Todo{})
 }
 
 func dbInit() *gorm.DB {
@@ -54,8 +56,6 @@ func GenerateTableStruct(db *gorm.DB) {
 	})
 
 	g.UseDB(db) // reuse your gorm db
-
-	// Generate basic type-safe DAO API for struct `model.User` following conventions
 
 	g.ApplyBasic(
 		// Generate structs from all tables of current database
