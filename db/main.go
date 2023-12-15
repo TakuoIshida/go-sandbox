@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gen"
@@ -17,10 +18,14 @@ func main() {
 	db := dbInit()
 
 	// Dropします。(constrantsはよしなにやってくれる。)
-	db.Migrator().DropTable(&table.User{}, &table.Todo{})
+	// db.Migrator().DropTable(&table.User{}, &table.Todo{})
 
 	// dbをmigrateします（constraintsを意識した順序で並べないといけない）
-	db.AutoMigrate(&table.User{}, &table.Todo{})
+	// db.AutoMigrate(&table.User{}, &table.Todo{})
+
+	// go-gormigrateでmigrationをして、失敗した場合 => rollbackする
+	migrate(db)
+	// 成功したmigrationを１つ前に戻す
 }
 
 func dbInit() *gorm.DB {
@@ -63,4 +68,47 @@ func GenerateTableStruct(db *gorm.DB) {
 	)
 	// Generate the code
 	g.Execute()
+}
+
+func migrate(db *gorm.DB) {
+	m := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
+		{
+			ID: "201608301400",
+			Migrate: func(tx *gorm.DB) error {
+				// it's a good pratice to copy the struct inside the function,
+				// so side effects are prevented if the original struct changes during the time
+
+				return tx.Migrator().AutoMigrate(&table.User{}, &table.Todo{})
+			},
+			Rollback: func(tx *gorm.DB) error {
+				log.Println("Migration Rollback: User")
+				return tx.Migrator().DropTable(&table.User{}, &table.Todo{})
+			},
+		},
+		// {
+		// 	ID: "201608301402",
+		// 	Migrate: func(tx *gorm.DB) error {
+		// 		// it's a good pratice to copy the struct inside the function,
+		// 		// so side effects are prevented if the original struct changes during the time
+
+		// 		return tx.Migrator().AutoMigrate(table.Company{})
+		// 	},
+		// 	Rollback: func(tx *gorm.DB) error {
+		// 		log.Println("Migration Rollback: Company")
+		// 		return tx.Migrator().DropTable(table.Company{})
+		// 	},
+		// },
+	})
+
+	e := m.Migrate()
+	if e != nil {
+		log.Fatalf("Migration failed: %v", e)
+	}
+	log.Println("Migration did run successfully")
+
+	if err := m.RollbackLast(); err != nil {
+		log.Fatalf("Rollback failed: %v", err)
+	}
+	log.Println("Migration did run successfully")
+
 }

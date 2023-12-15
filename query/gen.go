@@ -16,39 +16,44 @@ import (
 )
 
 var (
-	Q    = new(Query)
-	Todo *todo
-	User *user
+	Q         = new(Query)
+	Migration *migration
+	Todo      *todo
+	User      *user
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
+	Migration = &Q.Migration
 	Todo = &Q.Todo
 	User = &Q.User
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:   db,
-		Todo: newTodo(db, opts...),
-		User: newUser(db, opts...),
+		db:        db,
+		Migration: newMigration(db, opts...),
+		Todo:      newTodo(db, opts...),
+		User:      newUser(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Todo todo
-	User user
+	Migration migration
+	Todo      todo
+	User      user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:   db,
-		Todo: q.Todo.clone(db),
-		User: q.User.clone(db),
+		db:        db,
+		Migration: q.Migration.clone(db),
+		Todo:      q.Todo.clone(db),
+		User:      q.User.clone(db),
 	}
 }
 
@@ -62,21 +67,24 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:   db,
-		Todo: q.Todo.replaceDB(db),
-		User: q.User.replaceDB(db),
+		db:        db,
+		Migration: q.Migration.replaceDB(db),
+		Todo:      q.Todo.replaceDB(db),
+		User:      q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Todo ITodoDo
-	User IUserDo
+	Migration IMigrationDo
+	Todo      ITodoDo
+	User      IUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Todo: q.Todo.WithContext(ctx),
-		User: q.User.WithContext(ctx),
+		Migration: q.Migration.WithContext(ctx),
+		Todo:      q.Todo.WithContext(ctx),
+		User:      q.User.WithContext(ctx),
 	}
 }
 
