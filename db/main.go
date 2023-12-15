@@ -16,11 +16,11 @@ func main() {
 	// dbを作成します
 	db := dbInit()
 
+	// Dropします。(constrantsはよしなにやってくれる。)
+	db.Migrator().DropTable(&table.User{}, &table.Todo{})
+
 	// dbをmigrateします（constraintsを意識した順序で並べないといけない）
 	db.AutoMigrate(&table.User{}, &table.Todo{})
-
-	// Dropします。(constrantsはよしなにやってくれる。)
-	// db.Migrator().DropTable(&table.User{}, &table.Todo{})
 }
 
 func dbInit() *gorm.DB {

@@ -1,6 +1,8 @@
 package table
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -11,6 +13,8 @@ type User struct {
 	Email      string    `gorm:"size:255;index:idx_email,unique"`
 	Age        int       `gorm:"check:age >= 0"`
 	DeleteFlag bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 	Todos      Todo `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
@@ -20,5 +24,7 @@ type Todo struct {
 	Title      string `gorm:"size:255;"`
 	Content    string `gorm:"size:255;"`
 	DeleteFlag bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 	UserId     uuid.UUID
 }

@@ -31,6 +31,8 @@ func newTodo(db *gorm.DB, opts ...gen.DOOption) todo {
 	_todo.Title = field.NewString(tableName, "title")
 	_todo.Content = field.NewString(tableName, "content")
 	_todo.DeleteFlag = field.NewBool(tableName, "delete_flag")
+	_todo.CreatedAt = field.NewTime(tableName, "created_at")
+	_todo.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_todo.UserID = field.NewString(tableName, "user_id")
 
 	_todo.fillFieldMap()
@@ -46,6 +48,8 @@ type todo struct {
 	Title      field.String
 	Content    field.String
 	DeleteFlag field.Bool
+	CreatedAt  field.Time
+	UpdatedAt  field.Time
 	UserID     field.String
 
 	fieldMap map[string]field.Expr
@@ -67,6 +71,8 @@ func (t *todo) updateTableName(table string) *todo {
 	t.Title = field.NewString(table, "title")
 	t.Content = field.NewString(table, "content")
 	t.DeleteFlag = field.NewBool(table, "delete_flag")
+	t.CreatedAt = field.NewTime(table, "created_at")
+	t.UpdatedAt = field.NewTime(table, "updated_at")
 	t.UserID = field.NewString(table, "user_id")
 
 	t.fillFieldMap()
@@ -84,11 +90,13 @@ func (t *todo) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (t *todo) fillFieldMap() {
-	t.fieldMap = make(map[string]field.Expr, 5)
+	t.fieldMap = make(map[string]field.Expr, 7)
 	t.fieldMap["id"] = t.ID
 	t.fieldMap["title"] = t.Title
 	t.fieldMap["content"] = t.Content
 	t.fieldMap["delete_flag"] = t.DeleteFlag
+	t.fieldMap["created_at"] = t.CreatedAt
+	t.fieldMap["updated_at"] = t.UpdatedAt
 	t.fieldMap["user_id"] = t.UserID
 }
 

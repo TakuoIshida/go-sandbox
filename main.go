@@ -3,24 +3,27 @@ package main
 import (
 	"fmt"
 	"go-sandbox/config"
-	todo_controller "go-sandbox/controller"
-	"go-sandbox/domain/service"
+	todocontroller "go-sandbox/controller"
 	database "go-sandbox/infrastructure"
-	"go-sandbox/infrastructure/repository"
+	repositoryimpl "go-sandbox/infrastructure/repository"
+	todoserviceimpl "go-sandbox/service"
+	todousecaseimpl "go-sandbox/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	config.LoadConfig()
-	router := gin.New() // TODO
+	router := gin.New() // TODO: router　configについて調査
+	// TODO: request ctxにuserIdを入れたい
 	// router.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
 
 	conn := database.NewDBClientConnector()
 
-	todoRepository := repository.NewTodoRepositoryImpl(conn.DB)
-	todoService := service.NewTodoServiceImpl(todoRepository)
-	todoController := todo_controller.TodoController(todoService)
+	todoRepository := repositoryimpl.NewTodoRepositoryImpl(conn.DB)
+	todoService := todoserviceimpl.NewTodoServiceImpl(todoRepository)
+	todoUsecase := todousecaseimpl.NewTodoUsecaseImpl(todoService)
+	todoController := todocontroller.NewTodoController(todoUsecase)
 
 	todoGroup := router.Group("/todo")
 	{

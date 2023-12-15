@@ -4,14 +4,20 @@
 
 package model
 
+import (
+	"time"
+)
+
 const TableNameUser = "users"
 
 // User mapped from table <users>
 type User struct {
-	ID         string `gorm:"column:id;primaryKey" json:"id"`
-	Email      string `gorm:"column:email" json:"email"`
-	Age        int64  `gorm:"column:age" json:"age"`
-	DeleteFlag bool   `gorm:"column:delete_flag" json:"delete_flag"`
+	ID         string    `gorm:"column:id;primaryKey" json:"id"`
+	Email      string    `gorm:"column:email" json:"email"`
+	Age        int64     `gorm:"column:age" json:"age"`
+	DeleteFlag bool      `gorm:"column:delete_flag" json:"delete_flag"`
+	CreatedAt  time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
 // TableName User's table name

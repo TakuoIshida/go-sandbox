@@ -1,63 +1,60 @@
-package todo_controller
+package todocontroller
 
 import (
-	"fmt"
-	todo_model "go-sandbox/domain/model"
-	todo_service "go-sandbox/domain/service"
+	todousecase "go-sandbox/domain/usecase"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-type todoController struct {
-	todoService todo_service.ITodoService
+type TodoControllerImpl struct {
+	TodoUsecase todousecase.ITodoUsecase
 }
 
-func TodoController(ts todo_service.ITodoService) *todoController {
-	return &todoController{
-		todoService: ts,
+func NewTodoController(tu todousecase.ITodoUsecase) *TodoControllerImpl {
+	return &TodoControllerImpl{
+		TodoUsecase: tu,
 	}
 }
 
-func (ts *todoController) FindById(ctx *gin.Context) {
-	id, err := strconv.ParseInt(fmt.Sprintf("%s", ctx.Param("id")), 10, 64)
+func (tc *TodoControllerImpl) FindById(ctx *gin.Context) {
+	id, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	todo := ts.todoService.FindById(ctx, id)
+	todo := tc.TodoUsecase.FindById(ctx, id)
 
 	ctx.JSON(http.StatusOK, todo)
 }
 
-func (ts *todoController) FindList(ctx *gin.Context) {
-	todoList := ts.todoService.FindAll(ctx)
+func (tc *TodoControllerImpl) FindList(ctx *gin.Context) {
+	todoList := tc.TodoUsecase.FindAll(ctx)
 	ctx.JSON(http.StatusOK, todoList)
 }
 
 type CreateTodoDto struct {
 	Title   string
 	Content string
+	UserId  uuid.UUID
 }
 
-func (ts *todoController) Create(ctx *gin.Context) {
+func (tc *TodoControllerImpl) Create(ctx *gin.Context) {
 	var body CreateTodoDto
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	new := todo_model.Todo{
-		Title:      body.Title,
-		Content:    body.Content,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
-		DeleteFlag: false,
-	}
-	ts.todoService.Create(ctx, new)
-	ctx.JSON(http.StatusCreated, new)
+
+	tc.TodoUsecase.Create(ctx, todousecase.CreateTodoRequest{
+		Title:   body.Title,
+		Content: body.Content,
+		UserId:  body.UserId,
+	})
+	ctx.Status(http.StatusCreated)
 }
 
 type UpdateTodoDto struct {
@@ -67,13 +64,13 @@ type UpdateTodoDto struct {
 	CreatedAt time.Time
 }
 
-// func (ts *todoController) Update(ctx *gin.Context) {
+// func (tc *TodoControllerImpl) Update(ctx *gin.Context) {
 // 	var body UpdateTodoDto
 // 	if err := ctx.ShouldBindJSON(&body); err != nil {
 // 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 // 		return
 // 	}
-// 	edit := todo_model.Todo{
+// 	edit := todomodel.Todo{
 // 		ID:         body.ID,
 // 		Title:      body.Title,
 // 		Content:    body.Content,
@@ -86,15 +83,15 @@ type UpdateTodoDto struct {
 // }
 
 type DeleteTodoDto struct {
-	ID int64
+	ID uuid.UUID
 }
 
-func (ts *todoController) Delete(ctx *gin.Context) {
+func (tc *TodoControllerImpl) Delete(ctx *gin.Context) {
 	var body DeleteTodoDto
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ts.todoService.Delete(ctx, body.ID)
+	tc.TodoUsecase.Delete(ctx, body.ID)
 	ctx.JSON(http.StatusCreated, body.ID)
 }

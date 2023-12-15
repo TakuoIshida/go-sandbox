@@ -4,15 +4,21 @@
 
 package model
 
+import (
+	"time"
+)
+
 const TableNameTodo = "todos"
 
 // Todo mapped from table <todos>
 type Todo struct {
-	ID         string `gorm:"column:id;primaryKey" json:"id"`
-	Title      string `gorm:"column:title" json:"title"`
-	Content    string `gorm:"column:content" json:"content"`
-	DeleteFlag bool   `gorm:"column:delete_flag" json:"delete_flag"`
-	UserID     string `gorm:"column:user_id" json:"user_id"`
+	ID         string    `gorm:"column:id;primaryKey" json:"id"`
+	Title      string    `gorm:"column:title" json:"title"`
+	Content    string    `gorm:"column:content" json:"content"`
+	DeleteFlag bool      `gorm:"column:delete_flag" json:"delete_flag"`
+	CreatedAt  time.Time `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"column:updated_at" json:"updated_at"`
+	UserID     string    `gorm:"column:user_id" json:"user_id"`
 }
 
 // TableName Todo's table name

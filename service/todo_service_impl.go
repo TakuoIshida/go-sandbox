@@ -1,19 +1,21 @@
-package service
+package todoserviceimpl
 
 import (
 	todo_model "go-sandbox/domain/model"
-	"go-sandbox/infrastructure/repository"
+	todorepository "go-sandbox/domain/repository"
+	todoservice "go-sandbox/domain/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type TodoServiceImpl struct {
-	TodoRepository repository.ITodoRepository
+	TodoRepository todorepository.ITodoRepository
 }
 
-func NewTodoServiceImpl(tagRepository repository.ITodoRepository) ITodoService {
+func NewTodoServiceImpl(tr todorepository.ITodoRepository) todoservice.ITodoService {
 	return &TodoServiceImpl{
-		TodoRepository: tagRepository,
+		TodoRepository: tr,
 	}
 }
 
@@ -23,7 +25,7 @@ func (t *TodoServiceImpl) Create(ctx *gin.Context, todo todo_model.Todo) {
 }
 
 // Delete implements TodoService
-func (t *TodoServiceImpl) Delete(ctx *gin.Context, id int64) {
+func (t *TodoServiceImpl) Delete(ctx *gin.Context, id uuid.UUID) {
 	t.TodoRepository.Delete(ctx, id)
 }
 
@@ -33,7 +35,7 @@ func (t *TodoServiceImpl) FindAll(ctx *gin.Context) []todo_model.Todo {
 }
 
 // FindById implements TodoService
-func (t *TodoServiceImpl) FindById(ctx *gin.Context, id int64) todo_model.Todo {
+func (t *TodoServiceImpl) FindById(ctx *gin.Context, id uuid.UUID) todo_model.Todo {
 	return t.TodoRepository.FindById(ctx, id)
 }
 
