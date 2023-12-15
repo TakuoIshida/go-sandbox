@@ -1,4 +1,4 @@
-package todocontroller
+package controller
 
 import (
 	todousecase "go-sandbox/domain/usecase"
