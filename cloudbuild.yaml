@@ -12,7 +12,7 @@ steps:
     - "-c"
     - |
       cat << EOF >> app-secret.yaml
-      BUCKET: $BUCKET
+      BUCKET: $$BUCKET
       EOF
   secretEnv: ['BUCKET']
 # Deploy to Cloud Run
