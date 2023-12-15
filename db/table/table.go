@@ -28,8 +28,3 @@ type Todo struct {
 	UpdatedAt  time.Time
 	UserId     uuid.UUID
 }
-
-type Company struct {
-	Id   string
-	Name string
-}

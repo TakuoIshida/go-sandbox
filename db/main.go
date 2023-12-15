@@ -85,30 +85,13 @@ func migrate(db *gorm.DB) {
 				return tx.Migrator().DropTable(&table.User{}, &table.Todo{})
 			},
 		},
-		// {
-		// 	ID: "201608301402",
-		// 	Migrate: func(tx *gorm.DB) error {
-		// 		// it's a good pratice to copy the struct inside the function,
-		// 		// so side effects are prevented if the original struct changes during the time
-
-		// 		return tx.Migrator().AutoMigrate(table.Company{})
-		// 	},
-		// 	Rollback: func(tx *gorm.DB) error {
-		// 		log.Println("Migration Rollback: Company")
-		// 		return tx.Migrator().DropTable(table.Company{})
-		// 	},
-		// },
 	})
 
 	e := m.Migrate()
 	if e != nil {
+		m.RollbackLast()
 		log.Fatalf("Migration failed: %v", e)
+		return
 	}
 	log.Println("Migration did run successfully")
-
-	if err := m.RollbackLast(); err != nil {
-		log.Fatalf("Rollback failed: %v", err)
-	}
-	log.Println("Migration did run successfully")
-
 }
