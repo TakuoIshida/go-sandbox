@@ -1,12 +1,12 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"go-sandbox/config"
 	"go-sandbox/query"
 	"log"
 
+	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -58,14 +58,14 @@ func connectWithCloudSql() (*gorm.DB, error) {
 	fmt.Println("connectWithCloudSql")
 	cfg := config.Conf
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
-	dbPool, err := sql.Open("pgx", dsn)
+
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
+		DriverName: "cloudsqlpostgres",
+		DSN:        dsn,
+	}))
 	if err != nil {
 		return nil, fmt.Errorf("sql.Open: %v", err)
 	}
-
-	gormDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: dbPool,
-	}), &gorm.Config{})
 
 	return gormDB, nil
 }
