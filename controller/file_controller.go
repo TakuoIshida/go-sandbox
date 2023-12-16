@@ -30,7 +30,7 @@ func Upload(ctx *gin.Context) {
 }
 
 func Download(ctx *gin.Context) {
-	filename := ctx.Query("filename")
+	filename := ctx.Param("filename")
 	bucket := os.Getenv("BUCKET")
 	client := cloudstorage.New(ctx)
 
