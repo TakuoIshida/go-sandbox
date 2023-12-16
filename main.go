@@ -44,7 +44,7 @@ func main() {
 	fileGroup := router.Group("/file")
 	{
 		fileGroup.POST("/upload", controller.Upload)
-		fileGroup.POST("/download", controller.Download)
+		fileGroup.POST("/download/:filename", controller.Download)
 	}
 
 	router.GET("/", func(ctx *gin.Context) {

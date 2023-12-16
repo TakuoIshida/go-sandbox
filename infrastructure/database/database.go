@@ -20,7 +20,7 @@ func NewDBClientConnector() *DBClientConnector {
 	if config.Conf.GIN_MODE == gin.ReleaseMode || config.Conf.GIN_MODE == gin.TestMode {
 		db, err := connectWithCloudSql()
 		if err != nil {
-			log.Fatalf("cannot connect with local db")
+			log.Fatalf("cannot connect with cloud db")
 		}
 		return &DBClientConnector{
 			DB: db,
@@ -54,7 +54,7 @@ func connectWithLocalDB() (*gorm.DB, error) {
 }
 
 func connectWithCloudSql() (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s port=%s database=%s", config.Conf.DbHost, config.Conf.DbUser, config.Conf.DbPassword, config.Conf.DbPort, config.Conf.DbName)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", config.Conf.DbHost, config.Conf.DbUser, config.Conf.DbPassword, config.Conf.DbName, config.Conf.DbPort)
 	dbPool, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("sql.Open: %w", err)
