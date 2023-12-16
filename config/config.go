@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	GIN_MODE   string
 	DbHost     string
 	DbUser     string
 	DbName     string
@@ -25,6 +26,7 @@ func LoadConfig() {
 	}
 
 	Conf = Config{
+		GIN_MODE:   os.Getenv("GIN_MODE"),
 		DbHost:     os.Getenv("POSTGRES_HOST"),
 		DbUser:     os.Getenv("POSTGRES_USER"),
 		DbName:     os.Getenv("POSTGRES_DB"),

@@ -16,7 +16,11 @@ import (
 
 func main() {
 	config.LoadConfig()
-	router := gin.New()                 // TODO: router　configについて調査
+	if config.Conf.GIN_MODE == "release" {
+		gin.SetMode(gin.ReleaseMode)
+		fmt.Println("run in production")
+	}
+	router := gin.New()
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	// TODO: request ctxにuserIdを入れたい
 	// router.Use(common.BasicAuthRequired) // Protect these resources with basic auth.
