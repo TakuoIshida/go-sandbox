@@ -38,6 +38,7 @@ func NewDBClientConnector() *DBClientConnector {
 }
 
 func connectWithLocalDB() (*gorm.DB, error) {
+	fmt.Println("connectWithLocalDB")
 	cfg := config.Conf
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
 
@@ -54,11 +55,10 @@ func connectWithLocalDB() (*gorm.DB, error) {
 }
 
 func connectWithCloudSql() (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", config.Conf.DbHost, config.Conf.DbUser, config.Conf.DbPassword, config.Conf.DbName, config.Conf.DbPort)
+	fmt.Println("connectWithCloudSql")
+	cfg := config.Conf
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
 	dbPool, err := sql.Open("pgx", dsn)
-	if err != nil {
-		return nil, fmt.Errorf("sql.Open: %w", err)
-	}
 	if err != nil {
 		return nil, fmt.Errorf("sql.Open: %v", err)
 	}
