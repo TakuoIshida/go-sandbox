@@ -20,8 +20,9 @@ steps:
       POSTGRES_PORT: '$$POSTGRES_PORT'
       INSTANCE_CONNECTION_NAME: '$$INSTANCE_CONNECTION_NAME'
       PRIVATE_IP: '$$PRIVATE_IP'
+      GIN_MODE: '$$GIN_MODE'
       EOF
-  secretEnv: ['BUCKET', 'POSTGRES_HOST', 'POSTGRES_USER', 'POSTGRES_DB', 'POSTGRES_PASSWORD', 'POSTGRES_PORT', 'INSTANCE_CONNECTION_NAME', 'PRIVATE_IP']
+  secretEnv: ['BUCKET', 'POSTGRES_HOST', 'POSTGRES_USER', 'POSTGRES_DB', 'POSTGRES_PASSWORD', 'POSTGRES_PORT', 'INSTANCE_CONNECTION_NAME', 'PRIVATE_IP', 'GIN_MODE']
 # Deploy to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
@@ -57,3 +58,5 @@ availableSecrets:
     env: 'INSTANCE_CONNECTION_NAME'
   - versionName: projects/$PROJECT_NUMBER/secrets/PRIVATE_IP/versions/latest
     env: 'PRIVATE_IP'
+  - versionName: projects/$PROJECT_NUMBER/secrets/GIN_MODE/versions/latest
+    env: 'GIN_MODE'
