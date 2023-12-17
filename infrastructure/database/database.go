@@ -57,7 +57,7 @@ func connectWithLocalDB() (*gorm.DB, error) {
 func connectWithCloudSql() (*gorm.DB, error) {
 	fmt.Println("connectWithCloudSql")
 	cfg := config.Conf
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
 
 	gormDB, err := gorm.Open(postgres.New(postgres.Config{
 		DriverName: "cloudsqlpostgres",
