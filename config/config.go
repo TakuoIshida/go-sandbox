@@ -28,13 +28,11 @@ func LoadConfig() {
 	}
 
 	Conf = Config{
-		GIN_MODE:                 os.Getenv("GIN_MODE"),
-		DbHost:                   os.Getenv("POSTGRES_HOST"),
-		DbUser:                   os.Getenv("POSTGRES_USER"),
-		DbName:                   os.Getenv("POSTGRES_DB"),
-		DbPassword:               os.Getenv("POSTGRES_PASSWORD"),
-		DbPort:                   os.Getenv("POSTGRES_PORT"),
-		INSTANCE_CONNECTION_NAME: os.Getenv("INSTANCE_CONNECTION_NAME"),
-		PRIVATE_IP:               os.Getenv("PRIVATE_IP"),
+		GIN_MODE:   os.Getenv("GIN_MODE"),
+		DbHost:     os.Getenv("POSTGRES_HOST"),
+		DbUser:     os.Getenv("POSTGRES_USER"),
+		DbName:     os.Getenv("POSTGRES_DB"),
+		DbPassword: os.Getenv("POSTGRES_PASSWORD"),
+		DbPort:     os.Getenv("POSTGRES_PORT"),
 	}
 }
