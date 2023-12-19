@@ -62,7 +62,7 @@ func fetchPostComments(post string, reschan chan any, wg *sync.WaitGroup) {
 }
 
 func sample2() {
-	ch := make(chan int, 2)
+	ch := make(chan []int, 2)
 
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -71,8 +71,7 @@ func sample2() {
 	go func() {
 		fmt.Println("Sending data...")
 		time.Sleep(2 * time.Second) // saving
-		ch <- 42
-		ch <- 23
+		ch <- []int{1, 2}
 		wg.Done()
 	}()
 
@@ -81,11 +80,9 @@ func sample2() {
 		// ch からデータを取得するまでdead lockになる
 		// 関数としては上の関数に依存してるので、可読性、メンテ性は良くない。
 		value := <-ch
-		value2 := <-ch
-		fmt.Println("Received data:", value, value2)
+		fmt.Println("Received data:", value)
 
-		ch <- value + 1
-		ch <- value2 + 1
+		ch <- append(value, 3)
 		wg.Done()
 	}()
 	// 非同期処理が完了するまで待機する
