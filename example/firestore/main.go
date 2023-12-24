@@ -21,8 +21,15 @@ func createClient(ctx context.Context) *firestore.Client {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 	// Close client when done with
-	// defer client.Close()
 	return client
+}
+
+type User struct {
+	Id          string    `firestore:"id"`
+	Name        string    `firestore:"name"`
+	Age         int       `firestore:"age"`
+	CreatedAt   time.Time `firestore:"created_at"`
+	Delete_flag bool      `firestore:"delete_flag"`
 }
 
 func main() {
@@ -35,14 +42,19 @@ func main() {
 
 	// 処理の開始時刻を記録
 	startTime := time.Now()
+	ch := make(chan []User, 2)
 
 	var wg sync.WaitGroup
 	wg.Add(2)
 
-	go getUser(ctx, client, userId, &wg)
-	go getUser(ctx, client, userId2, &wg)
+	go getUser(ctx, client, userId, &wg, ch)
+	go getUser(ctx, client, userId2, &wg, ch)
 
 	wg.Wait()
+	close(ch)
+	for data := range ch {
+		fmt.Println("受信したデータ:", data)
+	}
 	// 処理の終了時刻を記録し、経過時間を計算
 	elapsed := time.Since(startTime)
 
@@ -51,7 +63,7 @@ func main() {
 
 }
 
-func getUser(ctx context.Context, client *firestore.Client, userId string, wg *sync.WaitGroup) {
+func getUser(ctx context.Context, client *firestore.Client, userId string, wg *sync.WaitGroup, ch chan []User) {
 	// 処理の開始時刻を記録
 	startTime := time.Now()
 
@@ -62,7 +74,14 @@ func getUser(ctx context.Context, client *firestore.Client, userId string, wg *s
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(snapshot)
+	fmt.Println(snapshot.Data())
+	var user User
+	user.Id = userId
+	if err := snapshot.DataTo(&user); err != nil {
+		log.Fatalf("Failed to map data to User struct: %v", err)
+	}
+	ch <- []User{user}
+
 	// 処理の終了時刻を記録し、経過時間を計算
 	elapsed := time.Since(startTime)
 
