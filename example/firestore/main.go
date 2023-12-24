@@ -13,7 +13,6 @@ import (
 
 func createClient(ctx context.Context) *firestore.Client {
 	// Sets your Google Cloud Platform project ID.
-	// projectID := "inner-root-409103"
 	credsFilePath := "./gcp-credentials.json"
 
 	// Create a new client with the credentials
