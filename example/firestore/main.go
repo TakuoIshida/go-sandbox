@@ -76,7 +76,7 @@ func getUser(ctx context.Context, client *firestore.Client, userId string, wg *s
 	}
 	fmt.Println(snapshot.Data())
 	var user User
-	user.Id = userId
+	user.Id = snapshot.Ref.ID // == userId
 	if err := snapshot.DataTo(&user); err != nil {
 		log.Fatalf("Failed to map data to User struct: %v", err)
 	}
