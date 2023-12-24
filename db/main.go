@@ -30,7 +30,7 @@ func main() {
 
 func dbInit() *gorm.DB {
 	// .env ファイルを読み込む
-	err := godotenv.Load("./.env.local")
+	err := godotenv.Load("./.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
