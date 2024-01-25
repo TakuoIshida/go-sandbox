@@ -63,6 +63,25 @@ func main() {
 
 }
 
+func concurrentUsers(users []User) chan []User {
+	channelLen := len(users)
+	ch := make(chan []User, channelLen)
+
+	var wg sync.WaitGroup
+	wg.Add(channelLen)
+
+	for _, u := range users {
+		go func(u User) {
+			ch <- []User{u}
+			wg.Done()
+		}(u)
+	}
+
+	wg.Wait()
+	close(ch)
+	return ch
+}
+
 func getUser(ctx context.Context, client *firestore.Client, userId string, wg *sync.WaitGroup, ch chan []User) {
 	// 処理の開始時刻を記録
 	startTime := time.Now()
