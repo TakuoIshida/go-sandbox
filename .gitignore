@@ -1,3 +1,6 @@
 .env
 
 gcp-credentials.json
+
+## air
+tmp/**
