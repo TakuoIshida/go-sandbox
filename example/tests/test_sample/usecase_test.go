@@ -1,67 +1,60 @@
 package usecases
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestNewUserUsecase(t *testing.T) {
-	type args struct {
-		userRepo UserRepo
-	}
-	tests := []struct {
-		name string
-		args args
-		want UserUsecase
-	}{
-		// テストケース2: nil のユーザーリポジトリを渡す
-		{
-			name: "nilのユーザーリポジトリを渡す",
-			args: args{
-				userRepo: nil,
-			},
-			want: UserUsecase{},
-		},
-	}
-	t.Fatalf("Fatal")
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewUserUsecase(tt.args.userRepo); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewUserUsecase() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+type StubApprover struct {
+	isApproved bool
 }
 
-func TestUserUsecase_GetMe(t *testing.T) {
-	type fields struct {
-		userRepo UserRepo
-	}
-	type args struct {
-		id int
-	}
+func (s *StubApprover) IsApproved() bool {
+	return s.isApproved
+}
+
+func TestMailSender_CanSend(t *testing.T) {
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    User
-		wantErr bool
+		name     string
+		approver Approver
+		email    string
+		message  string
+		want     bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:     "未承認の場合は送信できない",
+			approver: &StubApprover{isApproved: false},
+			want:     false,
+		},
+		{
+			name:     "メールアドレスが空の場合は送信できないこと",
+			approver: &StubApprover{isApproved: true},
+			want:     false,
+		},
+		{
+			name:     "メッセージが空の場合は送信できないこと",
+			approver: &StubApprover{isApproved: true},
+			email:    "hoge@example.co.jp",
+			want:     false,
+		},
+		{
+			name:     "承認済みでメールアドレスとメッセージがある場合は送信できること",
+			approver: &StubApprover{isApproved: true},
+			email:    "hoge@example.co.jp",
+			message:  "Hello, World!",
+			want:     true,
+		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := UserUsecase{
-				userRepo: tt.fields.userRepo,
-			}
-			got, err := u.GetMe(tt.args.id)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("UserUsecase.GetMe() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserUsecase.GetMe() = %v, want %v", got, tt.want)
-			}
+			sender := NewMailSender(tt.approver, tt.email)
+			sender.SetMessage(tt.message)
+			got := sender.CanSend()
+
+			assert.Equal(t, tt.want, got)
 		})
 	}
+
 }
