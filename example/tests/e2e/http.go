@@ -1,3 +1,4 @@
+// Package: e2e testの動作確認をおこなうためのサンプルコード
 package main
 
 import (
