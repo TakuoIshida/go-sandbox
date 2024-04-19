@@ -47,9 +47,16 @@ func newPerson(firstName string, age int) *Person {
 	person := new(Person)
 	person.firstName = firstName
 	person.age = age
+	person.Deprecated("hloo")
 	return person
 }
 
 func (p *Person) intro(greetings string) string {
+	return greetings + " I am " + p.firstName
+}
+
+// Deprecated is a deprecated function that returns a string by concatenating the given greetings and the first name of the person.
+// Deprecated: This function is deprecated and should not be used in new code.
+func (p *Person) Deprecated(greetings string) string {
 	return greetings + " I am " + p.firstName
 }

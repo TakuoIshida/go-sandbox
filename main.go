@@ -49,7 +49,7 @@ func main() {
 
 	router.GET("/", func(ctx *gin.Context) {
 		fmt.Println(os.Getenv("BUCKET"))
-		ctx.Status(http.StatusOK)
+		ctx.JSON(http.StatusOK, "Hello, World!")
 	})
 	fmt.Println("Listen on http://localhost:8080")
 	router.Run()
