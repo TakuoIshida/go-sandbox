@@ -33,6 +33,9 @@ func main() {
 	// ↓がないと、エラーが発生してもエラーが表示されない
 	eg.Wait() //  すべてのgoroutineが終了するまで待つ.
 
+	// 最初のerrorを返す or 全てのgoroutineが成功すればいい場合は、こちらを使う
+	// err := eg.Wait()
+
 	for _, err := range errs {
 		fmt.Println(err)
 	}
