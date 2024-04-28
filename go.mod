@@ -20,6 +20,9 @@ require (
 
 require (
 	github.com/andybalholm/cascadia v1.3.2 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/morikuni/failure v1.1.2 // indirect
 	gopkg.in/go-jose/go-jose.v2 v2.6.2 // indirect
 )
 
