@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"go-sandbox/example/failure/service"
 	"log"
 	"net/http"
@@ -36,7 +37,7 @@ func errorLog(err error) {
 	log.Printf("[%v] %v\n", code, err)
 }
 
-func FileHandleFunc(c *gin.Context) {
+func UploadFileHandleFunc(c *gin.Context) {
 	file, _ := c.FormFile("file")
 	dst := "./uploads/" + file.Filename
 	err := c.SaveUploadedFile(file, dst)
@@ -54,5 +55,35 @@ func FileHandleFunc(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "uploaded",
+	})
+}
+
+func ReadFileHandleFunc(c *gin.Context) {
+	fileName := c.DefaultQuery("file", "")
+	fmt.Println("fileName", fileName)
+	// bytes, err := os.ReadFile(fmt.Sprintf("./uploads/%s", fileName))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// dst := "./uploads/" + file.Filename
+	// err := c.SaveUploadedFile(file, dst)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message": "failed to save",
+	// 	})
+	// 	return
+	// }
+	// id := c.DefaultQuery("id", "nil")
+
+	// log.Println(file.Filename)
+	// log.Println(id)
+	filePath := fmt.Sprintf("./uploads/%s", fileName)
+	fmt.Println("filePath", filePath)
+	c.File(filePath)
+	fmt.Println("read file")
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "downloaded",
 	})
 }
