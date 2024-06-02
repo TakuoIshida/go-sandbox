@@ -36,4 +36,16 @@ func main() {
 	// Chunk
 	chunkedNames := lo.Chunk(flattenNames, 2)
 	fmt.Println(chunkedNames) // [[Alice Bob] [Alice Charlie Bob]]
+
+	// Compact
+	compactedNames := lo.Compact([]string{"Alice", "", "", "Bob"})
+	fmt.Println(compactedNames) // [Alice Bob]
+
+	// IsNil
+	var nilSlice []string
+	fmt.Println(lo.IsNil(nilSlice)) // true
+
+	// ToPtr
+	ptr := lo.ToPtr("Alice")
+	fmt.Println(ptr) // 0xc0000b8000
 }
