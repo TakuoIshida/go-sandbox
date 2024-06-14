@@ -9,14 +9,24 @@ import (
 )
 
 type Person struct {
-	Name string
-	Age  int
+	Name     string
+	Age      int
+	Children []Person
 }
 
 func main() {
 	names := []string{"Alice", "Bob", "Alice", "Charlie", "Bob"}
 	names2 := []string{"Alice", "Bob", "Alice", "Charlie", "Bob"}
-	// fmt.Println(names)
+
+	s0 := Person{}
+	if len(s0.Children) == 0 {
+		fmt.Println("empty slice")
+	}
+	var children []Person // nilではない
+	s0.Children = children
+	if len(s0.Children) == 0 {
+		fmt.Println("empty slice")
+	}
 
 	s1 := Person{
 		Name: "Alice",
@@ -56,11 +66,11 @@ func cmpStruct() {
 		Friends []string
 	}
 	person1 := PersonWithFriends{
-		Person:  Person{"Alice", 30},
+		Person:  Person{"Alice", 30, []Person{}},
 		Friends: []string{"Bob", "Charlie"},
 	}
 	person2 := PersonWithFriends{
-		Person:  Person{"Alice", 30},
+		Person:  Person{"Alice", 30, []Person{}},
 		Friends: []string{"Bob", "Charlie"},
 	}
 
