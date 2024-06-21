@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 
 	"github.com/samber/lo"
@@ -48,4 +49,17 @@ func main() {
 	// ToPtr
 	ptr := lo.ToPtr("Alice")
 	fmt.Println(ptr) // 0xc0000b8000
+
+	currentUserBranchIDs := []int{1, 2, 3, 4, 5}
+	operationUserIDs := []int{1, 2}
+	holdBranchIDs := lo.Filter(currentUserBranchIDs, func(currentUserBranchID int, index int) bool {
+		return !lo.Contains(operationUserIDs, currentUserBranchID)
+	})
+
+	fmt.Println(holdBranchIDs)
+
+	// Concat
+	concatenatedNames := slices.Concat([]string{"Alice", "Bob"}, []string{"Charlie", "David"})
+	fmt.Println(concatenatedNames)
+
 }
