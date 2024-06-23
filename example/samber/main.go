@@ -62,4 +62,12 @@ func main() {
 	concatenatedNames := slices.Concat([]string{"Alice", "Bob"}, []string{"Charlie", "David"})
 	fmt.Println(concatenatedNames)
 
+	BranchIDs := []int{1, 2, 3}
+	allBranchIDs := []int{1, 2, 3, 4, 5}
+	exists := lo.EveryBy(BranchIDs, func(branchID int) bool {
+		return slices.Contains(allBranchIDs, branchID)
+	})
+
+	fmt.Println(exists)
+
 }
