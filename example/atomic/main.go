@@ -3,52 +3,55 @@ package main
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 // go run -race main.go で競合チェックができる
 func main() {
-	// i := 0
-	var i int64
+	runRaceCondition()
+	runMutexLock()
+}
 
-	// Race
-	// go func() {
-	// 	i++
-	// }()
+// データ競合
+func runRaceCondition() {
+	src := []int{1, 2, 3, 4, 5}
+	dst := []int{}
 
-	// go func() {
-	// 	i++
-	// }()
+	// srcの要素毎にある何か処理をして、結果をdstにいれる
+	for _, s := range src {
+		go func(s int) {
+			// 何か(重い)処理をする
+			result := s * 2
 
-	// atomic
-	// var wg sync.WaitGroup
-	// wg.Add(2)
-	// go func() {
-	// atomic.AddInt64(&i, 1)
-	// 	wg.Done()
-	// }()
-	// go func() {
-	// 	atomic.AddInt64(&i, 2)
-	// 	wg.Done()
-	// }()
-	// wg.Wait()
+			// 結果をdstにいれる
+			dst = append(dst, result)
+		}(s)
+	}
+	time.Sleep(time.Second)
+	fmt.Println("runRaceCondition", dst)
+}
 
-	// mutex Lock
+func runMutexLock() {
 	mux := sync.Mutex{}
 	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		mux.Lock()
-		i++
-		mux.Unlock()
-		wg.Done()
-	}()
-	go func() {
-		mux.Lock()
-		i++
-		mux.Unlock()
-		wg.Done()
-	}()
-	wg.Wait()
 
-	fmt.Println(i)
+	src := []int{1, 2, 3, 4, 5}
+	dst := []int{}
+
+	// srcの要素毎にある何か処理をして、結果をdstにいれる
+	wg.Add(len(src))
+	for _, s := range src {
+		go func(s int) {
+			// 何か(重い)処理をする
+			result := s * 2
+
+			// 結果をdstにいれる
+			mux.Lock()
+			dst = append(dst, result)
+			mux.Unlock()
+			wg.Done()
+		}(s)
+	}
+	wg.Wait()
+	fmt.Println("runMutexLock", dst) // 必ず、srcの要素数と同じ数の要素が入っている
 }
