@@ -7,4 +7,4 @@ sql:
       go:
         package: "models"
         out: "models"
-        sql_package: "pgx/v5"
+        sql_package: "database/sql" ## Either pgx/v4, pgx/v5 or database/sql. Defaults to database/sql.

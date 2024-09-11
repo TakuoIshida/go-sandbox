@@ -2,24 +2,21 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	"go-sandbox/example/tutorial/config"
 	"go-sandbox/example/tutorial/models"
 	"log"
 	"reflect"
 
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
+	_ "github.com/lib/pq"
 )
 
 func run() error {
 	ctx := context.Background()
+	db := open()
 
-	conn, err := pgx.Connect(ctx, "user=pqgotest dbname=pqgotest sslmode=verify-full")
-	if err != nil {
-		return err
-	}
-	defer conn.Close(ctx)
-
-	queries := models.New(conn)
+	queries := models.New(db)
 
 	// list all authors
 	authors, err := queries.ListAuthors(ctx)
@@ -31,7 +28,7 @@ func run() error {
 	// create an author
 	insertedAuthor, err := queries.CreateAuthor(ctx, models.CreateAuthorParams{
 		Name: "Brian Kernighan",
-		Bio:  pgtype.Text{String: "Co-author of The C Programming Language and The Go Programming Language", Valid: true},
+		Bio:  sql.NullString{String: "Co-author of The C Programming Language", Valid: true},
 	})
 	if err != nil {
 		return err
@@ -49,7 +46,19 @@ func run() error {
 	return nil
 }
 
+func open() *sql.DB {
+	cfg := config.Conf
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Tokyo", cfg.DbHost, cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbPort)
+	fmt.Println("dsn", dsn)
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return db
+}
+
 func main() {
+	config.LoadConfig()
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
