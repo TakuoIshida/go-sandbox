@@ -1,0 +1,16 @@
+# local開発用
+version: "3.7"
+services:
+  db:
+    image: postgres:13-alpine
+    container_name: "go_sqlc_tutorial"
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_PORT
+    ports:
+      - "$POSTGRES_PORT:5432"
+volumes:
+  database:
+    driver: local
