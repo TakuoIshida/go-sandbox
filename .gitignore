@@ -6,3 +6,4 @@ gcp-credentials.json
 tmp/**
 
 tseq.out
+.DS_store

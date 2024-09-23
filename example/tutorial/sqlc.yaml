@@ -1,4 +1,6 @@
 version: "2"
+cloud:
+  project: '01J7F5WZ208VKBFYBJRWWRFD53'
 sql:
   - engine: "postgresql"
     queries: "queries/**"
